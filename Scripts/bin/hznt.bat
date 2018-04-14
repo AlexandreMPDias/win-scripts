@@ -1,0 +1,1 @@
+@echo off & tr '\t' '\n'
