@@ -1,2 +1,2 @@
 @echo off 
-call __multipledir %1 cd
+call %~dp0\..\__multipledir %1 cd

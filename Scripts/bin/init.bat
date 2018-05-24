@@ -1,7 +1,3 @@
 @echo off 
-if %1 == v-ads (
-	workon v-ads
-	jump v-ads
-) else (
-	echo Error. Open not set for [ %1 ]
-)
+call %~dp0\..\__multipledir %1 cd
+workon %1
