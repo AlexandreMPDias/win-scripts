@@ -1,4 +1,4 @@
 @ECHO OFF
 setlocal
-set pathex="C:\Program Files\MeuScript\help.txt"
+set "pathex=%~dp0..\help.txt"
 cat %pathex%

@@ -1,8 +1,10 @@
-fix::C:\Alexandre\Cyberlabs\Fix
-exp::C:\Alexandre\Codigos\Experimenting
 scripts::C:\Dev\win-scripts\Scripts
 main::C:\Alexandre
 git::C:\Alexandre\Git
 config::C:\Dev\win-scripts\Scripts\config
 node::C:\Users\Alexandre\node_modules
 home::%appdata%\..\..
+exp::C:\Alexandre\Codigos\Experimenting
+work::C:\Alexandre\Work
+luna::C:\Alexandre\Work\luna
+dev::C:\Dev

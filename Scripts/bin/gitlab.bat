@@ -1,5 +1,5 @@
 @echo off
-set "loc=C:\Alexandre\Script\gitlabdir"
+set "loc=%~dp0..\gitlabdir"
 
 if [%1] == [] (
 	type %loc%\public | clip
