@@ -8,7 +8,7 @@ if [%1] == [] (
 )
 
 if %1 == react (
-	if not [%2] == [skip] (
+	if [%2] == [skip] (
 		echo Initializing React with [ yarn start ]
 		yarn start
 		goto :eof
@@ -20,7 +20,7 @@ if %1 == react (
 	)
 )
 if %1 == nuxt (
-	if not [%2] == [skip] (
+	if [%2] == [skip] (
 		echo Initializing Nuxt with [ yarn nuxt ]
 		yarn nuxt
 		goto :eof
@@ -32,7 +32,7 @@ if %1 == nuxt (
 	)
 )
 if %1 == vue (
-	if not [%2] == [skip] (
+	if [%2] == [skip] (
 		echo Initializing Vue with [ yarn run dev ]
 		yarn run dev
 		goto :eof
@@ -44,13 +44,14 @@ if %1 == vue (
 	)
 )
 if %1 == artisan (
-	if not [%2] == [skip] (
+	if [%2] == [skip] (
 		echo Initializing Artisan with [ php artisan serve ]
 		php artisan serve
 		goto :eof
 	) else (
 		echo Initializing Artisan with [ composer install ] and [ php artisan serve ]
 		composer install
+		php artisan migrate
 		php artisan serve
 		goto :eof
 	)

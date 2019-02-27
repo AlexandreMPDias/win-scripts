@@ -1,2 +1,3 @@
 Scripts/__multipledir*
-Scripts/config
+Scripts/config/paths
+Scripts/config/update_path.cpp
