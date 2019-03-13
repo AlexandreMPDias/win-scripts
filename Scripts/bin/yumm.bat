@@ -1,7 +1,7 @@
 @echo off
 
 if [%1] == [] (
-	call yarn build
+	call yarn build:win
 ) else (
 	call yarn build:%1
 )
