@@ -1,3 +1,5 @@
 @echo off 
-explorer C:\Dev\EasyPHP-Devserver-17
-exit
+set "cwd=%cd%"
+cd C:\Dev\EasyPHP-Devserver-17
+start run-devserver.exe
+cd %cwd%
