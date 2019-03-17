@@ -1,6 +1,6 @@
 output = open('../__multipledir.bat', 'w')
 try:
-	file = open('./path','r')
+	file = open('./paths','r')
 	fileContent = file.read()
 
 	maps = fileContent.split("\n")
@@ -32,4 +32,4 @@ try:
 	output.close()
 except:
 	print('[ paths ] file not found.\nMake sure there\'s a [ path ] file inside Scripts/config')
-	output.write('[ paths ] file not found.\nMake sure there\'s a [ path ] file inside Scripts/config')
+	output.write('@echo off\necho [ paths ] file not found.\necho Make sure there\'s a [ path ] file inside Scripts/config')
