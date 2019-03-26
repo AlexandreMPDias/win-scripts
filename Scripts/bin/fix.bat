@@ -37,6 +37,10 @@ if [%1] == [reset_internet] (
 	echo --------------------------------
 	netsh int ip reset
 	echo --------------------------------
+	ipconfig /release
+	ipconfig /flushdns
+	ipconfig /renew
+	echo --------------------------------
 	goto :eof
 )
 if [%1] == [restart_computer] (
