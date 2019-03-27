@@ -20,9 +20,14 @@ try:
 	mapping += header()
 	keys = ('[ . ]','[ .. ]')
 	for map in maps:
-		key, path = map.split('::')
-		keys = (keys) + (f"[ {key} ]",)
-		mapping += createLine(key,path)
+		if len(map) < 1 :
+			continue
+		try:
+			key, path = map.split('::')
+			keys = (keys) + (f"[ {key} ]",)
+			mapping += createLine(key,path)
+		except:
+			print('Malformed path [' + map + ']')
 
 	mapping += footer(keys)
 
@@ -30,6 +35,6 @@ try:
 
 	file.close()
 	output.close()
-except:
-	print('[ paths ] file not found.\nMake sure there\'s a [ path ] file inside Scripts/config')
+except Exception as e:
+	print('[ paths ] file not found.\nMake sure there\'s a [ paths ] file inside Scripts/config')
 	output.write('@echo off\necho [ paths ] file not found.\necho Make sure there\'s a [ path ] file inside Scripts/config')
