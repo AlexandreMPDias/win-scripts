@@ -9,7 +9,7 @@ if [%1] == [] (
 		call:show_usage
 		goto :eof
 	) else (
-		git clone --single-branch -b %1 %2 %3
+		git clone -b %1 %2 %3
 		goto :eof
 	)
 )
