@@ -32,12 +32,10 @@ for %%A in (%arguments%) do (
 )
 
 if %workspace%==__empty__ (
-	call yarn build:win
+	call yarn build
 ) else (
 	call yarn build:%workspace%
 )
-
-call yarn awesome
 
 if %declarations%==1 ( 
 	call yarn build:declarations

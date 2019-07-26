@@ -14,6 +14,8 @@ if [%1] == [laravel] (
 		echo Resetting Cache
 		php artisan optimize:clear
 		php artisan config:clear
-		composer dump-autoload
+		composer dump-autoload -o
 	)
 )
+echo Invalid Env.
+echo Envs^: [laravel]

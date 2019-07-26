@@ -4,4 +4,4 @@ if [%1] == [] (
 	echo Example^: deathnote code
 	goto :eof
 )
-taskkill /im %1.exe /F
+taskkill /im %1 /F
