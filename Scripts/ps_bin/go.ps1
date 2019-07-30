@@ -1,0 +1,1 @@
+& (Join-Path $PSScriptRoot "__multipledir") -destinationPath $args[0] -command "cd"
