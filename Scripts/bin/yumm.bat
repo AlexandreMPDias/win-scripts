@@ -2,6 +2,7 @@
 setlocal EnableDelayedExpansion
 
 set "skipRun=0"
+set "skipBuild=0"
 set "declarations=0"
 set "workspace=__empty__"
 set "runspace=__empty__"
@@ -17,6 +18,9 @@ for %%A in (%arguments%) do (
 		if !command! == d (
 			set "declarations=1"
 		)
+		if !command! == b (
+			set "skipBuild=1"
+		)
 	) else (
 		if !workspace!==__empty__ (
 			set "workspace=%%A"
@@ -31,13 +35,22 @@ for %%A in (%arguments%) do (
 	)
 )
 
-if %workspace%==__empty__ (
-	call yarn build:win
-) else (
-	call yarn build:%workspace%
-)
+echo Workspace = %workspace%
+echo RunSpace = %runspace%
 
-call yarn awesome
+if %skipBuild%==0 (
+	if %workspace%==__empty__ (
+		call yarn build
+	) else (
+		if %workspace%==all (
+			call yarn build:win
+		) else (
+			call yarn build:%workspace%
+		)
+	)
+) else (
+	set "runspace=%workspace%"
+)
 
 if %declarations%==1 ( 
 	call yarn build:declarations
