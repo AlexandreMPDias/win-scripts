@@ -1,6 +1,7 @@
 @echo off
 setlocal EnableDelayedExpansion
 
+set "defaultRun=web"
 set "skipRun=0"
 set "skipBuild=0"
 set "declarations=0"
@@ -8,18 +9,27 @@ set "workspace=__empty__"
 set "runspace=__empty__"
 set arguments=%1 %2 %3 %4 %5 %6 %7
 
+echo.
+
 for %%A in (%arguments%) do (
 	set value=%%A
 	if "!value:~0,1!" == "\" (
 		set "command=!value:~1!"
 		if !command! == r (
+			echo Skipping Run
 			set "skipRun=1"
 		)
 		if !command! == d (
+			echo Skipping Declarations
 			set "declarations=1"
 		)
 		if !command! == b (
+			echo Skipping Build
 			set "skipBuild=1"
+		)
+		if !command! == a (
+			echo Building All
+			set "workspace=all"
 		)
 	) else (
 		if !workspace!==__empty__ (
@@ -35,15 +45,28 @@ for %%A in (%arguments%) do (
 	)
 )
 
-echo Workspace = %workspace%
-echo RunSpace = %runspace%
+if %workspace% neq __empty__ (
+	echo [ Building ]^: %workspace%
+) else (
+	if %skipBuild% == 0 (
+		echo [ Building ]^: Everything ^(No buildSpace set, running all)^
+	)
+)
+if %declarations% neq 0 (
+	echo [ Building ]^: declarations
+)
+if %runspace% neq __empty__ (
+	echo [ Running  ]^: %runspace%
+) else (
+	echo [ Running  ]^: [%defaultRun%] ^(No runSpace set, running default^)
+)
 
 if %skipBuild%==0 (
 	if %workspace%==__empty__ (
 		call yarn build
 	) else (
 		if %workspace%==all (
-			call yarn build:win
+			call yarn build
 		) else (
 			call yarn build:%workspace%
 		)
@@ -57,7 +80,7 @@ if %declarations%==1 (
 )
 if %skipRun%==0 (
 	if %runspace%==__empty__ (
-		call yarn run:web
+		call yarn run:%defaultRun%
 	) else (
 		call yarn run:%runspace%
 	)

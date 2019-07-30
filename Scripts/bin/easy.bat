@@ -45,3 +45,5 @@ if [%1] == [laravel] (
 		easy laravel 
 	)
 )
+echo Invalid Env.
+echo Envs^: [laravel]
