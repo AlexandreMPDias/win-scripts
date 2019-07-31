@@ -49,7 +49,7 @@ if %workspace% neq __empty__ (
 	echo [ Building ]^: %workspace%
 ) else (
 	if %skipBuild% == 0 (
-		echo [ Building ]^: Everything ^(No buildSpace set, running all)^
+		echo [ Building ]^: Everything ^(No buildSpace set, building everything)^
 	)
 )
 if %declarations% neq 0 (
