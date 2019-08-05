@@ -20,15 +20,12 @@ for %%A in (%arguments%) do (
 			set "skipRun=1"
 		)
 		if !command! == d (
-			echo Skipping Declarations
 			set "declarations=1"
 		)
 		if !command! == b (
-			echo Skipping Build
 			set "skipBuild=1"
 		)
 		if !command! == a (
-			echo Building All
 			set "workspace=all"
 		)
 	) else (
@@ -46,20 +43,35 @@ for %%A in (%arguments%) do (
 )
 
 if %workspace% neq __empty__ (
-	echo [ Building ]^: %workspace%
+	if %skipBuild% == 1 (
+		echo [ Building]^: Skipping Build
+	) else (
+		echo [ Building ]^: %workspace%
+	)
 ) else (
-	if %skipBuild% == 0 (
-		echo [ Building ]^: Everything ^(No buildSpace set, running all)^
+	if %skipBuild% == 1 (
+		echo [ Building]^: Skipping Build
+	) else (
+		echo [ Building ]^: Everything ^(No buildSpace set, running all^)
 	)
 )
 if %declarations% neq 0 (
 	echo [ Building ]^: declarations
 )
 if %runspace% neq __empty__ (
-	echo [ Running  ]^: %runspace%
+	if %skipRun% == 1 (
+		echo [ Running]^: Skipping Run
+	) else (
+		echo [ Running  ]^: %runspace%
+	)
 ) else (
-	echo [ Running  ]^: [%defaultRun%] ^(No runSpace set, running default^)
+	if %skipRun% == 1 (
+		echo [ Running]^: Skipping Run
+	) else (
+		echo [ Running  ]^: [%defaultRun%] ^(No runSpace set, running default^)
+	)
 )
+echo.
 
 if %skipBuild%==0 (
 	if %workspace%==__empty__ (
