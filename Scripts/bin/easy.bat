@@ -5,11 +5,6 @@ if [%1] == [] (
 	goto: eof
 )
 if [%1] == [laravel] (
-	if [%2] == [] (
-		echo Command not set.
-		echo Commands for [%1]^: [reset-cache]
-		goto: eof
-	)
 	if [%2] == [reset-cache] (
 		echo Resetting Cache
 		php artisan optimize:clear
@@ -40,10 +35,13 @@ if [%1] == [laravel] (
 		php artisan key:generate > NUL
 		php artisan serve
 	)
-	if [%3] == [full-update] (
+	if [%2] == [full-update] (
 		git pull
 		easy laravel 
 	)
+	echo Command not set. [%2]
+	echo Commands for [%1]^: [reset-cache][force-reset][init]
+	goto: eof
 )
-echo Invalid Env.
+echo Invalid Env. [%1]
 echo Envs^: [laravel]

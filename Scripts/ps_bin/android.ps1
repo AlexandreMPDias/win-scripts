@@ -34,7 +34,7 @@ else {
 	$path = (Join-Path $EMULATOR_PATH emulator.exe)
 	$command = "$path -avd $PHONE_NAME"
 	# invoke-item -Path $EMULATOR_PATH "emulator -avd $PHONE_NAME"
-	$args = @("-avd", $PHONE_NAME)
+	$args = @("-avd", $PHONE_NAME,"-no-boot-anim", "-no-snapstorage","-no-jni","-no-passive-gps")
 	& "$path" $args
 	Write-Host $command
 }
