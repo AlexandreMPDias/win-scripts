@@ -10,7 +10,8 @@ FOR /F "tokens=* USEBACKQ" %%F IN (`type ip_regex.txt`) DO (
   SET var!count!=%%F
   SET /a count=!count!+1
 )
-echo %var1:~36% | clip
-echo %var1:~36%
+set out=%var1:~36%
+echo|set /p dummy=%out%|clip
+echo %out%
 rm -rf %outfile%
 ENDLOCAL
