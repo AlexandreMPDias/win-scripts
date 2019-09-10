@@ -1,8 +1,16 @@
 @echo off
+setlocal
 
+set "innerBin=%~dp0../inner_bin"
 
 if [%1] == [] (
-	echo Nothing to run, try update maybe?
+	echo [Awesome] Invalid command.
+	echo Valid commands are [update], [path_update]
+	goto :eof
+)
+if [%1] == [path_update] (
+	%innerBin%/path_update.bat %2
+	goto :eof
 )
 if [%1] == [update] (
 	
@@ -29,3 +37,10 @@ if [%1] == [update] (
 	goto :eof
 
 )
+
+goto :eof
+
+:PATH_UPDATE
+notepad %~dp0../config/paths
+update.config %1
+exit /B 0
