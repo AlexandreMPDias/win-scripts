@@ -20,9 +20,9 @@ if [%1] == [help] (
 
 if [%1] neq [set-env] (
 if LARS_ENV=="" (
-	echo Env is not defined. Using Default
+	echo Env not defined. Using Default
 ) else (
-	echo Env set to ^[%LARS_ENV%^]
+	echo Env: ^[%LARS_ENV%^]
 ))
 
 if [%1] == [reset-cache] (
@@ -80,7 +80,7 @@ if [%1] == [set-env] (
 if [%1] == [init] (
 	echo composer install
 	composer install > NUL
-	echo php artisan migrate --env=%LARS_ENV%
+	echo php artisan migrate:fresh --env=%LARS_ENV%
 	php artisan migrate:fresh > NUL
 	echo php artisan db:seed --env=%LARS_ENV%
 	php artisan db:seed --env=%LARS_ENV% > NUL
