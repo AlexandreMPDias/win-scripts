@@ -8,6 +8,15 @@ if [%1] == [] (
 	echo Valid commands are [update], [path_update]
 	goto :eof
 )
+if [%1] == [new] (
+	if [%2] == [] (
+		echo Error: Script Name not set
+		goto :eof
+	)
+	echo.>%~dp0%2.bat
+	edit %2
+	goto :eof
+)
 if [%1] == [path_update] (
 	%innerBin%/path_update.bat %2
 	goto :eof
@@ -39,8 +48,3 @@ if [%1] == [update] (
 )
 
 goto :eof
-
-:PATH_UPDATE
-notepad %~dp0../config/paths
-update.config %1
-exit /B 0

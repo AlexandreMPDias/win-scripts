@@ -2,3 +2,4 @@ Scripts/__multipledir*
 Scripts/config/paths
 Scripts/temp/**
 .env
+private.json

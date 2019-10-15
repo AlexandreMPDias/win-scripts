@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const [nodePath, batchPatch, source, ...args] = process.argv;
+const [scriptName, nodePath, batchPatch, source, ...args] = process.argv;
 
 const validModes = ['full', 'keysOnly'];
 
