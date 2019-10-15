@@ -5,25 +5,29 @@ const params = parameters || [];
 const flagConfigExample = [
 	{
 		// Flag key
-		flag: "b",
+		flag: "help",
 		
 		// Default value for the flag
-		dft: 0, // default = undefined
+		default: 0, // default = undefined
 
 		// Flag's type's value
-		type: "number|string", // default = typeof dft, flags without pair = "undefined"
+		type: "number|string", // default = typeof default, flags without pair = "undefined"
 
 		// is the flag necessary
-		required: true // default = false
+		required: false, // default = false
+
+		name: "Command Line Help",
+
+		description: "Show the Command Line Flag Help",
 	}
 ]
 
 function createMessage(type, key, str2, str3) {
 	if(type === 'required') {
-		return `A flag [ ${key} ] é obrigatória e seu valor não foi setado.`
+		return `A flag [ ${key} ] é obrigatória. Seu valor não foi setado.`
 	}
 	if(type === 'last') {
-		return `A flag [ ${key} ] é obrigatória e foi o último parametro recebido. seu valor não foi setado.`
+		return `A flag [ ${key} ] é obrigatória e foi o último parametro recebido. Seu valor não foi setado.`
 	}
 	if(type === 'invalidType') {
 		return `{ ${str2} } não é um valor válido para [ ${key} ], Essa flag espera um valor do tipo ${str3}. (1-based index)`
@@ -36,32 +40,53 @@ module.exports = {
 		const errors = {};
 		const warnings = {};
 		const values = [];
+		let numErrors = 0;
+		let numWarnings = 0;
+
+		function cleanFlag(f) { return f.replace(/^-/,'') };
 
 		function isFlag(flag) {
-			const cleanFlag = flag.replace(/^-/,'');
-			return flagConfig.some(f => f.flag === cleanFlag);
+			const clean = cleanFlag(flag);
+			return flagConfig.some(f => f.flag === clean);
 		}
 		function isLastIndex(i) {
 			return i + 1 >= params.length;
 		}
 
+		function set(key, flagKey, value, keyName = "error") {
+			if(keyName === 'error') numErrors++;
+			else numWarnings++;
+			key[flagKey] = value;
+		}
+
 		function getFlagFromParam(at) {
-			const flagKey = params[at].replace(/^-/,'');
+			const flagKey = cleanFlag(params[at]);
 			return flagConfig.find(f => f.flag === flagKey)
 		}
 
 		for(let i = 0; i < params.length; i++) {
+			if(cleanFlag(params[i]) === 'help') {
+				console.log(flagConfig);
+			}
 			const flagPair = getFlagFromParam(i);
 			if(flagPair) {
-				const { flag, type, dft , required } = flagPair
-				if(type === "undefined") {
+				const { flag, type } = flagPair
+				if(type === "optional") {
+					if(!isLastIndex(i) && !isFlag(params[i+1])) {
+						flags[flag] = params[i+1];
+						i++;
+					} else {
+						flags[flag] = undefined;
+					}
+				}
+				else if(type === "undefined") {
 					flags[flag] = true;
 				}
 				else {
 					if(isLastIndex(i)) {
-						errors[flag] = createMessage('last', flag)
+						set(errors, flag, createMessage('last', flag));
 					} else if(isFlag(params[i+1])) {
-						errors[flag] = createMessage('required', flag)
+						set(errors, flag, createMessage('required', flag));
 					} else {
 						flags[flag] = params[i+1];
 						i++;
@@ -74,13 +99,28 @@ module.exports = {
 
 		flagConfig.forEach(fc => {
 			const valueSet = flags[fc.flag];
-			// Validate Type
-			const types = fc.type.split("|");
-			if(types.includes("string")) {
 
-			} else if(types.includes("number")) {
-				if(Number.isNaN(Number(valueSet))) {
-					errors[fc.flag] = createMessage('invalidType', valueSet, fc.type)
+			// Validate Type
+			if(typeof fc.type === 'string') {
+
+				// Validating String Types
+				const types = fc.type.split("|");
+				if(types.includes("string")) {
+					// nothing
+
+				} else if(types.includes("number")) {
+
+					if(Number.isNaN(Number(valueSet))) {
+						set(errors, fc.flag, createMessage('invalidType', fc.flag, valueSet, fc.type));
+					}
+				}
+
+				// Validate Enum Types
+			} else if(Array.isArray(fc.type)) {
+
+				if(!fc.type.includes(valueSet) && fc.required) {
+
+					set(errors, fc.flag, createMessage('invalidType', fc.flag, valueSet,`[ ${fc.type.join(',')} ]`));
 				}
 			}
 
@@ -88,11 +128,12 @@ module.exports = {
 			if(valueSet === undefined) {
 				// Validate Required
 				if(fc.required) {
-					errors[fc.flag] = createMessage('required', fc.flag)
+					set(errors, fc.flag,  createMessage('required', fc.flag));
+
 
 				// Set default
-				} else if(fc.dft !== undefined){
-					flags[fc.flag] = fc.dft;
+				} else if(fc.default !== undefined){
+					flags[fc.flag] = fc.default;
 				}
 			}
 		})
@@ -108,16 +149,11 @@ module.exports = {
 				batchPath,
 				source,
 				params
+			},
+			count: {
+				errors: numErrors,
+				warnings: numWarnings
 			}
-		}
-	},
-	flagParser: (flag, dft,  type,  required) => {
-		const ifSet = (a,b) => a ? a : b
-		return {
-			flag,
-			dft,
-			type: ifSet(type, typeof dft),
-			required: ifSet(required, false)
 		}
 	}
 }

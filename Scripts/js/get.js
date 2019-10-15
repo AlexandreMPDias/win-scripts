@@ -1,18 +1,30 @@
 const private = require("../config/private.json");
 const ArgParser = require("./helpers/parseArguments");
+const crypto = require('./helpers/crypto');
 
 const scriptFlags = [
-	ArgParser.flagParser('c', false, "undefined"),
+	{
+		flag: "c",
+		name: "clipboard",
+		description: "Copy the output value to clipboard and don't show it on the console",
+		default: false,
+		type: 'undefined',
+	},
 ];
 
 const parser = ArgParser.load(scriptFlags);
+
+if(parser.count.errors > 0) {
+	console.log(Object.values(parser.errors));
+	return;
+}
 
 let notFound = true;
 let valueFound;
 private.some((entry) => {
 	if(entry.key === parser.valueAt(0, 'rag')) {
 		notFound = false;
-		valueFound = (entry.value);
+		valueFound = crypto.decode(entry.value);
 		return true;
 	}
 })
@@ -28,10 +40,7 @@ if(!key && notFound) {
 	}
 } else {
 	if(parser.flags['c']) {
-		const util = require('util');
-		console.log(valueFound);
 		require('child_process').spawn('clip').stdin.end(valueFound);
-		// require('child_process').spawn('clip').stdin.end(util.inspect(valueFound));
 	} else {
 		console.log(valueFound);
 	}

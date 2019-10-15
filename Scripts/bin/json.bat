@@ -1,2 +1,2 @@
 @echo off
-js showScripts 
+js json json %*
