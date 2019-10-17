@@ -18,9 +18,13 @@ if [%1] == [help] (
 	goto :eof
 )
 
+if LARS_ENV == "" (
+	set "LARS_ENV=default"
+)
+
 if [%1] neq [set-env] (
-if LARS_ENV=="" (
-	echo Env not defined. Using Default
+if LARS_ENV == "default" (
+	echo Env: ^[default^]
 ) else (
 	echo Env: ^[%LARS_ENV%^]
 ))
