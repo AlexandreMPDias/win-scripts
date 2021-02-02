@@ -1,6 +1,2 @@
 @echo off 
-if [%1] == [] (
-	%~dp0..\__lister
-) else (
-	%~dp0..\__lister %1
-)
+node %~dp0..\js\cmds\list-scripts\index.js %*
