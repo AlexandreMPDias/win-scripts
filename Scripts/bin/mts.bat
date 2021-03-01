@@ -4,6 +4,8 @@ set "target=C:\\Alexandre\\bin\\NSFW"
 
 call :move_files .mp4
 call :move_files .mkv
+call :move_files .webm
+call :move_files .avi
 
 goto :eof
 
