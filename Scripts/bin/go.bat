@@ -1,8 +1,7 @@
 @echo off 
+%~dp0..\inner_bin\use_aliased_path.bat cd %*
 @REM cls
 @REM run-js get-alias-path %*
-FOR /F "tokens=*" %%g IN ('run-js get-alias-path %*') do (set NEXT_GO_TO_PATH=%%g)
-cd %NEXT_GO_TO_PATH%
 @REM set scriptAction=cd
 @REM set scriptPath=%~dp0..\__multipledir
 
