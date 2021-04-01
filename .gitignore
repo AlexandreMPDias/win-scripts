@@ -3,3 +3,4 @@ Scripts/config/paths
 Scripts/temp/**
 .env
 private.json
+Scripts/personal_bin 

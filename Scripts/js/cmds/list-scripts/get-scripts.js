@@ -12,7 +12,11 @@ const filterPrivate = (scripts) => {
 }
 
 const filterDeprecatedCommands = (scripts) => {
-	return scripts.filter(s => !deprecated.some(d => s.match(d)))
+	return scripts.filter(script => {
+		const str = path.parse(script).name;
+		const result = !deprecated.some(pattern => str.match(pattern))
+		return result;
+	});
 }
 
 const removeExtension = (scripts) => {

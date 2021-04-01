@@ -1,5 +1,5 @@
 const deprecated = [
-	'android',
+	/android$/,
 	'envs',
 	'home',
 	'restart',
@@ -15,15 +15,13 @@ const deprecated = [
 	'rum',
 	'yumm',
 	'cmdmp3win',
-	'git.changeuser',
+	/^git/,
 	'jzon',
 	'rumAdm',
 	'deathnote',
-	'git.push',
 	'lars',
 	'sample',
 	'easy',
-	'gitlab',
 	'migrate',
 	'strlen',
 

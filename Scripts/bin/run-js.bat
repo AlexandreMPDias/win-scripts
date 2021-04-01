@@ -5,4 +5,8 @@ if [%1] == [] (
 	ls %~dp0../js/cmds
 	goto :eof
 )
-node %~dp0..\js\cmds\%1\index.js %cd% %*
+if exist %~dp0..\personal_bin\node@latest.bat (
+	%~dp0..\personal_bin\node@latest.bat %~dp0..\js\cmds\%1\index.js %cd% %*
+) else (
+	node %~dp0..\js\cmds\%1\index.js %cd% %*
+)
