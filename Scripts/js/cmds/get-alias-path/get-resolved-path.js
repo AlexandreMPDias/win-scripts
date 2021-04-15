@@ -11,7 +11,7 @@ function getResolvedPath(paths, key) {
 	let resolved = null
 
 	function getResolvedPathStrict() {
-		return paths.find(entry => entry === key);
+		return paths.find(entry => entry.key === key);
 	}
 
 	resolved = getResolvedPathStrict();
