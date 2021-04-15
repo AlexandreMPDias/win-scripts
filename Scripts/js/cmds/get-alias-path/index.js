@@ -1,4 +1,4 @@
-const { chalk } = require('../../helpers');
+const { chalk, getArgs } = require('../../helpers');
 const fs = require("fs");
 const path = require("path");
 const getPath = require("./get-path");
@@ -18,7 +18,7 @@ function fixPath(any_path) {
 function main() {
 	const paths = getPath();
 
-	const aliasWithPath = process.argv.slice(4).join("/");
+	const aliasWithPath = getArgs(__dirname).join("/");
 
 
 	const { key, rest } = parseInputAlias(aliasWithPath);

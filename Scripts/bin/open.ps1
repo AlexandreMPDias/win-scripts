@@ -1,1 +1,1 @@
-& (Join-Path $PSScriptRoot "__multipledir") -destinationPath $args[0] -command "start"
+& (Join-Path $PSScriptRoot "../inner_bin/use_aliased_path") start $args
