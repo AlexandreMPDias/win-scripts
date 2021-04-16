@@ -1,0 +1,1 @@
+& "C:\ProgramData\chocolatey\lib\gsudo\bin\sudo.exe" $args
