@@ -1,3 +1,3 @@
 Write-Host "Opening Env" -ForegroundColor Green
-& Join-Path $PSScriptRoot "..\inner_bin\open_env_setter.bat";
+Start-Process rundll32.exe -NoNewWindow -Wait -ArgumentList sysdm.cpl,EditEnvironmentVariables
 refreshenv

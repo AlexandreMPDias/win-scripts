@@ -1,0 +1,1 @@
+Get-NetIPAddress -InterfaceIndex 6 -AddressFamily IPv4 | Format-Table
