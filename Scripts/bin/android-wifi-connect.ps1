@@ -1,7 +1,7 @@
 param(
 	[string]
-	[Parameter(Mandatory = $true, Position = 0)]
-	$ip
+	[Parameter(Position = 0)]
+	$ip = "10.0.0.22"
 )
 
 $devices = & adb devices
@@ -17,6 +17,8 @@ if ($extracted_ip -eq $ip) {
 }
 else {
 	adb -s $deviceId tcpip 5555
-	adb connect $ip':5555'
+	$port = ":5555"
+	adb connect "$ip$port"
+	adb -s $ip reverse tcp:8081 tcp:8081
 	Write-Host "Connected $deviceId to $ip" -ForegroundColor Green
 }
