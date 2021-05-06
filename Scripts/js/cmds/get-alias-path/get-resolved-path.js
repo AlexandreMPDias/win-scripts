@@ -31,10 +31,16 @@ function getResolvedPath(paths, key) {
 	}
 
 	resolved = getNextClosestResolvedPath();
-	if (resolved) return resolved.path;
 
+	if (resolved) return resolved.path;
 
 	throw new Error(`Unknown alias [ ${key} ]`)
 }
 
-module.exports = getResolvedPath;
+// const wrap = (fn) => (...args) => {
+// 	const output = fn(...args);
+// 	console.log(output);
+// 	return output;
+// }
+
+module.exports = getResolvedPath

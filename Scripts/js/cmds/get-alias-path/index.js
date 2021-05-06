@@ -29,6 +29,7 @@ function main() {
 	process.stdout.write(aliasedPath)
 }
 
+// main();
 try {
 	main();
 } catch (err) {
