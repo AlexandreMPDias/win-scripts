@@ -1,7 +1,5 @@
-const { chalk, getArgs } = require('../../helpers');
-const fs = require("fs");
 const path = require("path");
-const getPath = require("./get-path");
+const { chalk, getArgs, configPaths } = require('../../helpers');
 const getResolvedPath = require("./get-resolved-path");
 
 
@@ -16,7 +14,7 @@ function fixPath(any_path) {
 
 
 function main() {
-	const paths = getPath();
+	const paths = configPaths.get();
 
 	const aliasWithPath = getArgs(__dirname).join("/");
 

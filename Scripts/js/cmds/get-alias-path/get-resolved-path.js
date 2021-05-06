@@ -1,13 +1,13 @@
 
 /**
  * 
- * @param {Array<Record<'key'|'path', string>>} paths 
+ * @param {Array<Record<'key'|'path'|'category', string>>} paths 
  * @param {string} key 
  * 
  * @return {string}
  */
 function getResolvedPath(paths, key) {
-	/** @type {Record<'key'|'path', string>|null} */
+	/** @type {Record<'key'|'path'|'category', string>|null} */
 	let resolved = null
 
 	function getResolvedPathStrict() {
@@ -20,7 +20,8 @@ function getResolvedPath(paths, key) {
 	function getNextClosestResolvedPath() {
 		const matches = paths.filter(entry => {
 			const original = [entry.key, key];
-			const [left, right] = original.sort((a, b) => b.length - a.length);
+			console.log(original);
+			const [left, right] = original.sort((a, b) => b.length - a.length).map(x => x.toLowerCase());
 			return left.match(right);
 		});
 		if (matches.length > 1) {

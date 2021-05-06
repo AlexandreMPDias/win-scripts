@@ -1,49 +1,68 @@
-class CacheHelper {
-	constructor(src) {
-		this.src = src;
+/** @param {{ onUndefined?: (key: string|number) => any } options */
+function initOn(options) {
+	const on = {
+		undefined: options.onUndefined || (() => { })
+	}
+	return on;
+}
+
+class ProxyCache {
+	static cacheKey = Symbol('cache');
+
+	constructor(enabled) {
+		this.enabled = enabled
 	}
 
-	makeKey = (key) => `__$$cache__${key}`
+	updateSrc = (src) => this.src = src;
 
-	getValue = (key) => {
-		return this.src[this.makeKey(key)];
+	/**
+	 * @param {strign|number} key 
+	 * @param {ReturnType<typeof initOn>} on
+	 */
+	getValue = (key, on) => {
+		const cache = this.enabled ? this.cache : this.src;
+		if (cache[key] === undefined) {
+			cache[key] = on.undefined(key);
+		}
+		return cache[key];
 	}
 
-	assign = (key, value) => {
-		this.src[this.makeKey(key)] = value;
-	}
-
-	exists = (key) => {
-		return this.makeKey(key) in this.src;
+	get cache() {
+		if (!this.src[ProxyCache.cacheKey]) {
+			this.src[ProxyCache.cacheKey] = {};
+		}
+		return this.src[ProxyCache.cacheKey];
 	}
 
 }
 
 /**
  * Wraps a object around a Proxy
- * 
- * @param {object} source 
- * @param {{
- * 	onUndefined: (key: string|number) => any
+ *
+ * @type {<T>(source: T, options?: {
+ * 	onUndefined?: (key: string|number) => T[keyof T]
  * 	cache?: boolean
- * }} options 
+ * }) => T}
  */
-const proxify = (source, options) => {
+const proxify = (source, options = {}) => {
+	const on = initOn(options);
+
+	/** @type {ProxyCache} */
+	const cache = new ProxyCache(options.cache);
+
 	return new Proxy(source, {
 		get: (target, key) => {
-			if (!target[key] && (typeof key === 'string' || typeof key === 'number')) {
-				if (options.cache) {
-					const cache = new CacheHelper(target);
-					if (!cache.exists(key)) {
-						const value = options.onUndefined(key);
-						cache.assign(key, value);
-						return value;
-					}
-					return options.onUndefined(key);
+			cache.updateSrc(target);
+			if (typeof key === 'string' || typeof key === 'number') {
+				if (!target[key]) {
+					return cache.getValue(key, on);
 				}
 			}
+			return target[key];
 		}
 	})
 }
 
-module.exports = proxify;
+const unproxify = (proxy) => JSON.parse(JSON.stringify(proxy));
+
+module.exports = { proxify, unproxify };

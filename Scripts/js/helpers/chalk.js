@@ -9,7 +9,7 @@ const loadChalk = () => {
 		const chalkPath = path.join(nodePath, "node_modules", "chalk", "source", "index.js")
 		return require(chalkPath)
 	} catch {
-		const proxify = require('./proxify');
+		const { proxify } = require('./proxify');
 		const chalk = proxify({}, {
 			onUndefined: () => {
 				const setColor = (s) => s;

@@ -5,5 +5,15 @@
         "xstring": "cpp",
         "utility": "cpp",
         "string": "cpp"
+    },
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/*.bat": false,
+        "**/*.ps1": false,
+        "**/*.exe": true,
     }
 }

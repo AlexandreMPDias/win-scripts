@@ -1,0 +1,1 @@
+json -f C:\Users\Tijuk\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json -p '$root' --pattern '/actions,profiles/' -m full

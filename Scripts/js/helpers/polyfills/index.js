@@ -1,7 +1,8 @@
 const loadPolyfills = {
 	chunkify: () => require('./chunkify'),
 	transpose: () => require('./transpose'),
-	justify: () => require('./justify')
+	justify: () => require('./justify'),
+	stringCut: () => require('./string-cut')
 }
 
 /**
@@ -11,7 +12,14 @@ const loadPolyfills = {
  * @return {void}
  */
 const load = (...keys) => {
-	keys.forEach(key => loadPolyfills[key]());
+	keys.forEach(key => {
+		try {
+			loadPolyfills[key]()
+		} catch (err) {
+			console.error(`Unable to load [ ${key} ]`);
+			throw err;
+		}
+	});
 }
 
 
