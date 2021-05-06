@@ -37,9 +37,8 @@ function main() {
 		category.paths.forEach(({ path, key }) => {
 			console.log(writePath(key, path, maxKeySize, maxRowSize))
 		});
-
+		console.log();
 	})
-	console.log();
 }
 
 try {
