@@ -151,4 +151,7 @@ function getResolvedPath(paths, key) {
 	return resolver.resolvePath(paths, key);
 }
 
-module.exports = getResolvedPath
+module.exports = {
+	PathResolver,
+	getResolvedPath
+}

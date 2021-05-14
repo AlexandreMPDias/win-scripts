@@ -19,37 +19,36 @@ const parseValues = (values) => {
 }
 
 const paintMany = (color, values) => {
+	if (!color) return values;
 	return values.map(value => typeof value === 'object' ? value : color(value));
 }
 
-const log = {
-	info: (...values) => {
-		if (ALIAS_DEBUG_MODE === 1) {
-			console.log(...paintMany(chalk.cyan, values));
-		}
-		// else if (ALIAS_DEBUG_MODE === 2) {
-		// 	const vs = parseValues(values);
-		// 	process.stderr.write(chalk.cyan(vs));
-		// }
-	},
-	warn: (...values) => {
-		if (ALIAS_DEBUG_MODE) {
-			const vs = parseValues(values);
-			process.stderr.write(chalk.yellow(vs));
-		}
-	},
-	error: (...values) => {
-		if (ALIAS_DEBUG_MODE) {
-			const vs = parseValues(values);
-			process.stderr.write(chalk.red(vs) + '\n');
-		}
+/**
+ * 
+ * @param {typeof chalk['blue'] | undefined} color 
+ * 
+ * @returns {(...values: any[]) => void}
+ */
+const write = (color) => {
+	if (ALIAS_DEBUG_MODE === 1) {
+		return (...values) => console.log(...paintMany(color, values));
+	} else {
+		return (...values) => { };
 	}
 }
 
-if (ALIAS_DEBUG_MODE === 1) {
-	console.log(chalk.underline.green('ALIAS_DEBUG_MODE = 1'));
-} else if (ALIAS_DEBUG_MODE === 2) {
-	process.stderr.write(chalk.underline.green('ALIAS_DEBUG_MODE = 2') + '\n');
+const log = {
+	info: write(chalk.cyan),
+	warn: write(chalk.yellow),
+	error: write(chalk.red),
 }
+
+write(chalk.underline.green, `ALIAS_DEBUG_MODE = ${ALIAS_DEBUG_MODE}`)
+
+// if (ALIAS_DEBUG_MODE === 1) {
+// 	console.log(chalk.underline.green('ALIAS_DEBUG_MODE = 1'));
+// } else if (ALIAS_DEBUG_MODE === 2) {
+// 	process.stderr.write(chalk.underline.green('ALIAS_DEBUG_MODE = 2') + '\n');
+// }
 
 module.exports = { log }
