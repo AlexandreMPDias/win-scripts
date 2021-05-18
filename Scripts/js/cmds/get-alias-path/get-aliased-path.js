@@ -19,7 +19,7 @@ class PathAliasResolver {
 	parseInnerAlias = () => {
 		const matches = this.path.match(/\{\w*\}/g)
 
-		if (!matches) return this.path;
+		if (!matches) return;
 		const inner = matches.map(String);
 
 		const resolver = new PathResolver();
@@ -27,6 +27,8 @@ class PathAliasResolver {
 		const resolveAlias = (aliasKey) => resolver.resolvePath(this.resolverPaths, aliasKey.slice(1, -1))
 
 		this.path = inner.reduce((path, aliasKey) => path.replace(aliasKey, resolveAlias(aliasKey)), this.path);
+
+		this.parseInnerAlias();
 	}
 
 	/**
