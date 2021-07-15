@@ -5,4 +5,6 @@ module.exports = {
 	...require('./fs-list'),
 	...require('./get-config'),
 	configPaths: require('./get-path'),
-}
+	...require('./range'),
+	fn: require('./functional'),
+};

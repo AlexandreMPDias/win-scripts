@@ -75,6 +75,7 @@ Write-Host
 if ($reason -eq "gaming") {
 	Write-Header -Name "Gaming"
 
+	Write-Host Stopping WSL
 	wsl --shutdown
 	killCommon
 	killMany "code", "node", "adb", "studio64", "cmd", "pwsh", "slack"
