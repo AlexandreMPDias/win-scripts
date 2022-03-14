@@ -2,7 +2,8 @@
 	"aliases": {
 		"main": "15.14.0",
 		"aws-deploy": "14.15.4",
-		"pyro": "10.21.0"
+		"pyro": "10.21.0",
+		"atlas": "16.0.0"
 	},
 	"default": "main"
 }
