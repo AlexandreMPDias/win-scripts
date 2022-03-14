@@ -1,8 +1,8 @@
 {
 	"aliases": {
-		"regular": "15.14.0",
+		"main": "15.14.0",
 		"aws-deploy": "14.15.4",
 		"pyro": "10.21.0"
 	},
-	"default": "regular"
+	"default": "main"
 }

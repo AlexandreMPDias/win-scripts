@@ -1,6 +1,6 @@
 const internal = Symbol('internal');
 
-const TAB = '  '; // '\t';
+const TAB = '\t';
 
 class NVMScriptBuilderInternal {
 	constructor(contents, indentationLevel) {
@@ -126,7 +126,7 @@ class NVMScriptBuilder {
 	 * @returns {NVMScriptBuilder}
 	 */
 	writeIndented = callback => {
-		const nested = this.indent(this[internal].indentationLevel + 1, callback);
+		const nested = this.indent(1, callback);
 		const nestedContent = nested[internal].compose();
 		return this.write(nestedContent);
 	};

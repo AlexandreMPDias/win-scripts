@@ -18,7 +18,7 @@ function writeAliasScriptContent(config) {
 	const aliasEntries = Object.entries(config.aliases);
 
 	builder.ifCommand('use', cmdBuilder => {
-		cmdBuilder.ifAlias('', ({ echo }) =>
+		cmdBuilder.ifAlias('default', ({ echo }) =>
 			echo(`Using default alias [${defaultAlias}] for version [${defaultVersion}]`).nvm(
 				`use ${defaultVersion}`
 			)
