@@ -1,0 +1,1 @@
+run-js nvm-alias-setup
