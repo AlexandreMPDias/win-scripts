@@ -1,0 +1,1 @@
+mysqld --port 3306 --console
