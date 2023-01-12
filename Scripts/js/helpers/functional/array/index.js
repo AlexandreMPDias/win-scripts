@@ -6,6 +6,18 @@ const equals = (entries = []) => {
 };
 
 /**
+ * @type {{<T>(array: ReadonlyArray<T | readonly T[] | ReadonlyArray<T | readonly T[]> | ReadonlyArray<T | readonly T[] | ReadonlyArray<T | readonly T[]>>>) => T[]}
+ */
+const recursiveFlatten = array => {
+	const is3D = array => array.some(item => Array.isArray(item));
+	let outArray = Array.from(array);
+	while (is3D(outArray)) {
+		outArray = outArray.flat();
+	}
+	return outArray;
+};
+
+/**
  *
  * @type {{<K>(key: K) => <T>(entry:T, index: number) => T[K] }}
  */
@@ -34,6 +46,11 @@ const unique = array => {
 	return Array.from(new Set(array));
 };
 
+/**
+ * @type {<T>(arrayOrNot: T) => arrayOrNot is Extract<T, readonly unknown[]>}
+ */
+const is = arrayOrNot => Array.isArray(arrayOrNot);
+
 module.exports = {
 	lens,
 	len,
@@ -41,4 +58,6 @@ module.exports = {
 	equals,
 	filter,
 	map,
+	recursiveFlatten,
+	is,
 };

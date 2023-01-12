@@ -1,6 +1,7 @@
 Scripts/__multipledir*
 Scripts/config/paths
+Scripts/config/paths.json
 Scripts/temp/**
 .env
 private.json
-Scripts/personal_bin 
+Scripts/personal_bin

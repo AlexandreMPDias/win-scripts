@@ -1,9 +1,20 @@
+import re
+
 output = open('../__multipledir.bat', 'w')
+
+def loadMaps(file):
+	fileContent = file.read()
+	maps = fileContent.split("\n")
+
+	def cleanMapRow(row):
+		row = re.sub(r"#.+","",row)
+		return row
+
+	return [cleanMapRow(row) for row in maps]
+
 try:
 	file = open('./paths','r')
-	fileContent = file.read()
-
-	maps = fileContent.split("\n")
+	maps = loadMaps(file)
 
 
 	def createLine(key, path):
@@ -20,14 +31,15 @@ try:
 	mapping += header()
 	keys = ('[ . ]','[ .. ]')
 	for map in maps:
-		if len(map) < 1 :
+		if (map is None) or (len(map) <= 1) :
 			continue
 		try:
 			key, path = map.split('::')
 			keys = (keys) + (f"[ {key} ]",)
 			mapping += createLine(key,path)
-		except:
+		except Exception as e:
 			print('Malformed path [' + map + ']')
+			raise e
 
 	mapping += footer(keys)
 
@@ -36,5 +48,6 @@ try:
 	file.close()
 	output.close()
 except Exception as e:
+	raise e
 	print('[ paths ] file not found.\nMake sure there\'s a [ paths ] file inside Scripts/config')
 	output.write('@echo off\necho [ paths ] file not found.\necho Make sure there\'s a [ path ] file inside Scripts/config')
