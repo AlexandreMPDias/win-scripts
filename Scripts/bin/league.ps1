@@ -174,7 +174,7 @@ function Run-League {
 	Write-Host ""
 	Write-Host "Starting Riot using " -NoNewLine
 	Write-Host "locale = $locale" -ForegroundColor Cyan
-	# Start-Process -FilePath "C:\Riot Games\League of Legends\LeagueClient.exe" -ArgumentList "--locale=$locale"
+	Start-Process -FilePath "C:\Riot Games\League of Legends\LeagueClient.exe" -ArgumentList "--locale=$locale"
 }
 
 
