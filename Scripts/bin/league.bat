@@ -1,49 +1,70 @@
 @echo off
+powershell -file "%~dp0league.ps1" %*
 
-if [%LEAGUE_LOCALE%] == [] (
-	echo League Locale not set
-	echo Setting Locale to default value [ %defaultLocale% ]
-	set "LEAGUE_LOCALE=en_US"
-)
+@REM if [%LEAGUE_LOCALE%] == [] (
+@REM 	echo League Locale not set
+@REM 	echo Setting Locale to default value [ %defaultLocale% ]
+@REM 	set "LEAGUE_LOCALE=en_US"
+@REM )
 
-if [%1] == [--clean] (
-	call :run_league 1 1
-	goto :eof
-)
-if [%1] == [--purge] (
-	call :run_league 1 0
-	goto :eof
-)
-if [%1] == [--start] (
-	call :run_league 0 1
-	goto :eof
-)
-if [%1] == [] (
-	call :run_league 0 1
-	goto :eof
-)
+@REM if [%1] == [--clean] (
+@REM 	call :run_league 1 1
+@REM 	goto :eof
+@REM )
+@REM if [%1] == [--purge] (
+@REM 	call :run_league 1 0
+@REM 	goto :eof
+@REM )
+@REM if [%1] == [--start] (
+@REM 	call :run_league 0 1
+@REM 	goto :eof
+@REM )
+@REM if [%1] == [] (
+@REM 	call :run_league 0 1
+@REM 	goto :eof
+@REM )
 
-echo Invalid parameter
-echo Valid parameters are:
-echo 	--clean (Starts League after killing all League processes)
-echo 	--purge (only kill all League related processes)
-echo.
-echo Usage:
-echo 	league ^[--clean^]
+@REM echo Invalid parameter
+@REM echo Valid parameters are:
+@REM echo 	--clean (Starts League after killing all League processes)
+@REM echo 	--purge (only kill all League related processes)
+@REM echo.
+@REM echo Usage:
+@REM echo 	league ^[--clean^]
 
 
-goto :eof
+@REM goto :eof
 
-:run_league
-	if %1 == 1 (
-		echo.
-		(taskkill /im Riot* /F 2> nul || echo No Active Riot Processes found) && echo Active Riot Processes Killed
-		(taskkill /im League* /F 2> nul  || echo No Active League Processes found) && echo Active League Processes Killed
-	)
-	if %2 == 1 (
-		echo.
-		echo Starting Riot using locale = %LEAGUE_LOCALE%
-		echo You can alternate the Locale by setting the locale to LEAGUE_LOCALE
-		"C:\Riot Games\League of Legends\LeagueClient.exe" --locale=%LEAGUE_LOCALE%
-	)
-goto :eof
+@REM :run_set_locale_alias
+@REM 	if %1 == "en_US" (
+@REM 		set "LEAGUE_LOCALE=en_US"
+@REM 	)
+@REM 	if %1 == "enUS" (
+@REM 		set "LEAGUE_LOCALE=en_US"
+@REM 	)
+@REM 	if %1 == "en" (
+@REM 		set "LEAGUE_LOCALE=en_US"
+@REM 	)
+@REM 	if %1 == "pt_BR" (
+@REM 		set "LEAGUE_LOCALE=pt_BR"
+@REM 	)
+@REM 	if %1 == "ptBR" (
+@REM 		set "LEAGUE_LOCALE=pt_BR"
+@REM 	)
+@REM 	if %1 == "pt" (
+@REM 		set "LEAGUE_LOCALE=pt_BR"
+@REM 	)
+
+@REM :run_league
+@REM 	if %1 == 1 (
+@REM 		echo.
+@REM 		(taskkill /im Riot* /F 2> nul || echo No Active Riot Processes found) && echo Active Riot Processes Killed
+@REM 		(taskkill /im League* /F 2> nul  || echo No Active League Processes found) && echo Active League Processes Killed
+@REM 	)
+@REM 	if %2 == 1 (
+@REM 		echo.
+@REM 		echo Starting Riot using locale = %LEAGUE_LOCALE%
+@REM 		echo You can alternate the Locale by setting the locale to LEAGUE_LOCALE
+@REM 		"C:\Riot Games\League of Legends\LeagueClient.exe" --locale=%LEAGUE_LOCALE%
+@REM 	)
+@REM goto :eof
