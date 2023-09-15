@@ -185,3 +185,5 @@ if (-not $noRun) {
 	$locale = Get-Locale $locale
 	Run-League $locale
 }
+
+Start-Sleep -Seconds 5
