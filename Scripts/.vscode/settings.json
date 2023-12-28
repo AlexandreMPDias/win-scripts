@@ -1,19 +1,19 @@
 {
-  "files.associations": {
-    "iosfwd": "cpp",
-    "xlocale": "cpp",
-    "xstring": "cpp",
-    "utility": "cpp",
-    "string": "cpp"
-  },
-  "files.exclude": {
-    "**/.git": true,
-    "**/.svn": true,
-    "**/.hg": true,
-    "**/CVS": true,
-    "**/.DS_Store": true,
-    "**/*.bat": true,
-    "**/*.ps1": false,
-    "**/*.exe": true
-  }
+	"files.associations": {
+		"iosfwd": "cpp",
+		"xlocale": "cpp",
+		"xstring": "cpp",
+		"utility": "cpp",
+		"string": "cpp"
+	},
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/CVS": true,
+		"**/.DS_Store": true,
+		"**/*.bat": true,
+		"**/*.ps1": false,
+		"**/*.exe": true
+	}
 }

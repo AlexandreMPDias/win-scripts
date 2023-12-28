@@ -1,9 +1,15 @@
 @echo off
 setlocal
 set "myString=%1"
-call :strlen result myString
-echo %result%
-goto :eof
+if [%2] == [] (
+    call :strlen result myString
+    echo %result%
+    exit /b
+) else (
+    call :strlen %2 myString
+    goto :eof
+)
+
 
 :strlen <resultVar> <stringVar>
 (   

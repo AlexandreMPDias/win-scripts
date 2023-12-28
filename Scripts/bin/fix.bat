@@ -77,6 +77,10 @@ if [%1] == [restart_computer] (
 	goto :eof
 )
 
+echo InvalidKey: %1
+echo ValidKeys: [reset_internet][restart_computer][cpu_usage]
+goto :eof
+
 :cpu_usage
 	if [%1] == [1] (
 		echo "Level Set to 1"
@@ -98,6 +102,3 @@ if [%1] == [restart_computer] (
 		goto :eof
 	)
 exit /B 0
-
-echo InvalidKey: %1
-echo ValidKeys: [reset_internet],[restart_computer][cpu_usage]
