@@ -1,20 +1,36 @@
 Param(
 	[String]
-	[ValidateSet("gaming", "dev")]
+	[ValidateSet("gaming", "dev","cleanup","common")]
 	[Parameter(Mandatory=$true, Position = 0)]
-	$reason,
+	$reason
+	# ,
 
-	[Boolean]
-	[Parameter(Mandatory=$false, Position = 1)]
-	$gracefully = $false
+	# [Switch]
+	# [Parameter(Mandatory=$false, Position = 1, ParameterSetName = "g")]
+	# $gracefully = $false
 )
 
+$tab = "  "
+$gracefully = $false
+
+$CPU_TOTAL_TIME = 10.6 # (Get-Counter '\Processor(_Total)\% Processor Time').CounterSamples.CookedValue
+
+$global:TOTAL_CLEARED_RAM = 0
+$global:TOTAL_CLEARED_CPU = 0
+
 function Write-Header {
-	Param(
-		[String]
-		[Parameter(Mandatory=$true, Position = 0)]
-		$Name
-	)
+	function Get-Name {
+		if ($reason -eq "gaming") {
+			return "Gaming"
+		} elseif ($reason -eq "dev") {
+			return "Development"
+		}  elseif ($reason -eq "cleanup") {
+			return "Cleaning Up Memory"
+		}
+		return "Common"
+	}
+
+	$Name = Get-Name
 
 	function Write-Grace {
 		if($gracefully) {
@@ -24,38 +40,112 @@ function Write-Header {
 		}
 	}
 	Write-Host "Freeing Memory for " -NoNewline
-	Write-Host "$Name" -NoNewline -ForegroundColor Yellow
-	Write-Host " [ Gracefully = " -NoNewline
-	Write-Grace
-	Write-Host " ]"
+	Write-Host "[$Name]" -NoNewline -ForegroundColor Yellow
+	Write-Host
+	# Write-Host " (Gracefully = " -NoNewline
+	# Write-Grace
+	# Write-Host ")"
 }
 
-function Kill-Process {
+function GetProcessCPU {
+	Param($process)
+	$total = 0
+	$count = 0
+	$process | ForEach-Object {
+		$count = $count + 1
+		$total = $total + $_.CPU
+	}
+	if($count -gt 0) {
+		return $total/$count
+	}
+	return $total
+}
+
+function GetProcessRAM {
+	Param($process)
+	$total = 0
+	$process | ForEach-Object {
+		$total = $total + $_.WorkingSet64
+	}
+	return $total
+}
+
+function FormatByte {
+	Param($value)
+	$fmt = '{0:F1}'
+	if($value -gt 1GB) {
+		return "$fmt Gb" -f ($value/1GB)
+	}
+	if($value -gt 1MB) {
+		return "$fmt Mb" -f ($value/1MB)
+	}
+	if($value -gt 1KB) {
+		return "$fmt Kb" -f ($value/1KB)
+	}
+	return "$fmt b" -f ($value)
+	
+}
+
+function WriteResourcesCleared {
+	Param($cpu, $ram, $tab = "", $total = "")
+
+	$cpu_percent = ($cpu/$CPU_TOTAL_TIME).tostring("P")
+	$fmt_ram = FormatByte $ram
+	Write-Host $tab"$fmt_ram$total RAM and $cpu_percent$total CPU cleared"
+
+}
+
+function TerminateProcessByName {
 	Param(
 		[String]
 		[Parameter(Mandatory=$true)]
 		$Name
 	)
 
-	Write-Host "  Killing process: " -NoNewline
-	Write-Host "$Name" -ForegroundColor Red
+	# Write-Host "$tab" "Killing process: " -NoNewline
+	# Write-Host "$Name" -ForegroundColor Yellow
 
-	# get Firefox process
-	$process = Get-Process $Name -ErrorAction SilentlyContinue
-	if ($process) {
+	$process = Get-Process -Name $Name -ErrorAction SilentlyContinue
+	if($process) {
+		$process_ram = GetProcessRAM $process
+		$global:TOTAL_CLEARED_RAM = $global:TOTAL_CLEARED_RAM + $process_ram
+		$process_cpu = GetProcessCPU $process
+		$global:TOTAL_CLEARED_CPU = $global:TOTAL_CLEARED_CPU + $process_cpu
 
-		if($gracefully) {
-			# try gracefully first
-			$process.CloseMainWindow()
-
-			# kill after five seconds
-			Sleep 5
-		}
-
-		if (!$process.HasExited) {
-			$process | Stop-Process -Force
-		}
+		
+		Stop-Process -Name $Name -Force
+		Write-Host $tab "[$Name]: " -NoNewline
+		Write-Host "stopped" -ForegroundColor DarkGreen
+		WriteResourcesCleared $process_cpu $process_ram "$tab - "
+	} else {
+		Write-Host $tab "[$Name]: " -NoNewline
+		Write-Host "not found" -ForegroundColor DarkRed
 	}
+	# if ($process) {
+	# 	if($gracefully) {
+	# 		# try gracefully first
+	# 		$closed = $process.CloseMainWindow()
+	# 		if(!$closed) {
+	# 			Write-Host "Unable to close process [$Name]"
+	# 		}
+	# 		Write-Host "Closing state for [$Name] is ($closed)"
+
+
+	# 		# kill after five seconds
+	# 		Start-Sleep 5
+
+	# 	}
+
+	# 	if (!$process.HasExited) {
+	# 		$process | Stop-Process -Force
+	# 	}
+	# }
+}
+
+function StopWSL {
+	Write-Host "$tab" "Stopping " -NoNewline
+	Write-Host "WSL" -ForegroundColor Cyan
+	wsl --shutdown
 }
 
 function killMany {
@@ -63,8 +153,12 @@ function killMany {
 		[string[]]$processNames
 	)
 	foreach ($processName in $processNames) {
-		Kill-Process -Name $processName
+		TerminateProcessByName -Name $processName
 	}
+}
+
+function killLeftover {
+	killMany "git"
 }
 
 function killCommon {
@@ -72,17 +166,16 @@ function killCommon {
 }
 
 Write-Host
+Write-Header
+killCommon
 if ($reason -eq "gaming") {
-	Write-Header -Name "Gaming"
-
-	Write-Host Stopping WSL
-	wsl --shutdown
-	killCommon
 	killMany "code", "node", "adb", "studio64", "cmd", "pwsh", "slack"
+	StopWSL
 } elseif ($reason -eq "dev") {
-	Write-Header -Name "Development"
-
-	killCommon
-	killMany "Blitz*"
+	killMany "Blitz*", "Medal*", "Overwolf*"
+}  elseif ($reason -eq "cleanup") {
+	killLeftover
+	StopWSL
 }
 Write-Host
+WriteResourcesCleared $global:TOTAL_CLEARED_CPU $global:TOTAL_CLEARED_RAM "" " total"

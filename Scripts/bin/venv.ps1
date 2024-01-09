@@ -29,9 +29,9 @@ function EnvCreate {
 	$version_path = $version.replace('.','')
 	$python_path = "C:\Python" + $version_path + "\python.exe"
 	Write-Host "Creating Environment (Python $version)" -ForegroundColor DarkRed
-    & $python_path -m venv .venv
+	& $python_path -m venv .venv
 	EnvActivate
-	& $python_path -m pip install --upgrade pip
+	# & $python_path -m pip install --upgrade pip
 	# Write-Host "Installing pip"
 	# python -m pip install --upgrade
 }
