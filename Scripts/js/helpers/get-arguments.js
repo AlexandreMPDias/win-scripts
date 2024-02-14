@@ -1,9 +1,8 @@
 class ArgLister {
-	constructor(dirname = "") {
-		this.scriptName = String(dirname.split(/\\|\//g).pop() || "");
+	constructor(dirname = '') {
+		this.scriptName = String(dirname.split(/\\|\//g).pop() || '');
 		this.nonBinaryPathFound = false;
 	}
-
 
 	getArgs() {
 		// let output = [];
@@ -21,20 +20,19 @@ class ArgLister {
 	}
 
 	__shouldKeep(arg) {
-		if(arg.startsWith('C:')) {
-			if(!this.nonBinaryPathFound) {
+		if (arg.startsWith('C:')) {
+			if (!this.nonBinaryPathFound) {
 				return false;
 			}
 			return true;
 		} else {
 			this.nonBinaryPathFound = false;
 		}
-		if(arg === this.scriptName) {
+		if (arg === this.scriptName) {
 			return false;
 		}
-		return true
+		return true;
 	}
-
 }
 
 function getArgs(dirname) {
@@ -42,4 +40,14 @@ function getArgs(dirname) {
 	return argLister.getArgs();
 }
 
-module.exports = { getArgs }
+module.exports = {
+	getArgs,
+	argsHaveAnyFlag: (args, ...flags) => {
+		flags = flags.map(String);
+		const allflags = new Set([
+			...flags.map(f => `--${f}`),
+			...flags.map(f => `-${f.charAt(0)}`),
+		]);
+		return args.some(arg => allflags.has(arg));
+	},
+};

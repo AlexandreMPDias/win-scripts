@@ -7,4 +7,5 @@ module.exports = {
 	configPaths: require('./get-path'),
 	...require('./range'),
 	fn: require('./functional'),
+	ascii: require('./ascii'),
 };
