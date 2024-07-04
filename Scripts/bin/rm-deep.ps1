@@ -30,6 +30,7 @@ function Remove-NodeModules([string]$path,[int]$depth) {
     }
     if($maxDepth -gt -1) {
         if($depth -gt $maxDepth) {
+            Write-Verbose "Max depth of [$maxDepth] reached"
             return
         }
     }
@@ -44,7 +45,7 @@ function Remove-NodeModules([string]$path,[int]$depth) {
             }
             Write-Host "Removing $($_.FullName)\**"
             try {
-                $removed = Fast-Removal $_.FullName
+                $removed = FastRemoval $_.FullName
                 if($removed) {
                     Write-Host "`rRemoved $relativePath successfully." -ForegroundColor Green
                     $counts[1]=$counts[1]+1
@@ -61,7 +62,7 @@ function Remove-NodeModules([string]$path,[int]$depth) {
     }
 }
 
-function Fast-Removal([string] $path) {
+function FastRemoval([string] $path) {
     if(!$force) {
         $confirmation = ConfirmWithDropdown "You sure you want to remove ($pattern) at [ $path ]"
         if (!$confirmation) {

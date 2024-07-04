@@ -1,6 +1,6 @@
 Param(
 	[String]
-	[ValidateSet("gaming", "dev","cleanup","common")]
+	[ValidateSet("gaming", "dev","cleanup","vm","common")]
 	[Parameter(Mandatory=$true, Position = 0)]
 	$reason
 	# ,
@@ -18,6 +18,78 @@ $CPU_TOTAL_TIME = 10.6 # (Get-Counter '\Processor(_Total)\% Processor Time').Cou
 $global:TOTAL_CLEARED_RAM = 0
 $global:TOTAL_CLEARED_CPU = 0
 
+function MemFreeMain {
+    Write-Host
+    Write-Header
+    killCommon
+    if ($reason -eq "gaming") {
+        killMany "Docker Desktop", "com.docker.build", "com.docker.extensions"
+        killMany "code", "node", "adb", "studio64", "slack"
+        StopWSL
+        killMany "pwsh", "cmd"
+    } elseif ($reason -eq "vm") {
+        killMany "Docker Desktop" , "com.docker.build", "com.docker.extensions"
+        StopWSL
+    } elseif ($reason -eq "dev") {
+        killMany "Blitz*", "Medal*", "Overwolf*"
+    }  elseif ($reason -eq "cleanup") {
+        killLeftover
+        StopWSL
+    }
+    Write-Host
+    WriteResourcesCleared $global:TOTAL_CLEARED_CPU $global:TOTAL_CLEARED_RAM "" " total"
+}
+
+
+function TerminateProcessByName {
+	Param(
+		[String]
+		[Parameter(Mandatory=$true)]
+		$Name
+	)
+
+
+	# Write-Host "$tab" "Killing process: " -NoNewline
+	# Write-Host "$Name" -ForegroundColor Yellow
+
+	$process = Get-Process -Name $Name -ErrorAction SilentlyContinue
+	if($process) {
+		$process_ram = GetProcessRAM $process
+		$global:TOTAL_CLEARED_RAM = $global:TOTAL_CLEARED_RAM + $process_ram
+		$process_cpu = GetProcessCPU $process
+		$global:TOTAL_CLEARED_CPU = $global:TOTAL_CLEARED_CPU + $process_cpu
+		
+		Stop-Process -Name $Name -Force
+		Write-Host $tab "[$Name]: " -NoNewline
+		Write-Host "stopped" -ForegroundColor DarkGreen
+		WriteResourcesCleared $process_cpu $process_ram "$tab   - "
+	} else {
+		Write-Host $tab "[$Name]: " -NoNewline
+		Write-Host "not found" -ForegroundColor DarkRed
+	}
+	# if ($process) {
+	# 	if($gracefully) {
+	# 		# try gracefully first
+	# 		$closed = $process.CloseMainWindow()
+	# 		if(!$closed) {
+	# 			Write-Host "Unable to close process [$Name]"
+	# 		}
+	# 		Write-Host "Closing state for [$Name] is ($closed)"
+
+
+	# 		# kill after five seconds
+	# 		Start-Sleep 5
+
+	# 	}
+
+	# 	if (!$process.HasExited) {
+	# 		$process | Stop-Process -Force
+	# 	}
+	# }
+}
+
+
+
 function Write-Header {
 	function Get-Name {
 		if ($reason -eq "gaming") {
@@ -26,6 +98,8 @@ function Write-Header {
 			return "Development"
 		}  elseif ($reason -eq "cleanup") {
 			return "Cleaning Up Memory"
+		}  elseif ($reason -eq "restart") {
+			return "Cleaning Up VM Memory"
 		}
 		return "Common"
 	}
@@ -95,53 +169,6 @@ function WriteResourcesCleared {
 
 }
 
-function TerminateProcessByName {
-	Param(
-		[String]
-		[Parameter(Mandatory=$true)]
-		$Name
-	)
-
-	# Write-Host "$tab" "Killing process: " -NoNewline
-	# Write-Host "$Name" -ForegroundColor Yellow
-
-	$process = Get-Process -Name $Name -ErrorAction SilentlyContinue
-	if($process) {
-		$process_ram = GetProcessRAM $process
-		$global:TOTAL_CLEARED_RAM = $global:TOTAL_CLEARED_RAM + $process_ram
-		$process_cpu = GetProcessCPU $process
-		$global:TOTAL_CLEARED_CPU = $global:TOTAL_CLEARED_CPU + $process_cpu
-
-		
-		Stop-Process -Name $Name -Force
-		Write-Host $tab "[$Name]: " -NoNewline
-		Write-Host "stopped" -ForegroundColor DarkGreen
-		WriteResourcesCleared $process_cpu $process_ram "$tab - "
-	} else {
-		Write-Host $tab "[$Name]: " -NoNewline
-		Write-Host "not found" -ForegroundColor DarkRed
-	}
-	# if ($process) {
-	# 	if($gracefully) {
-	# 		# try gracefully first
-	# 		$closed = $process.CloseMainWindow()
-	# 		if(!$closed) {
-	# 			Write-Host "Unable to close process [$Name]"
-	# 		}
-	# 		Write-Host "Closing state for [$Name] is ($closed)"
-
-
-	# 		# kill after five seconds
-	# 		Start-Sleep 5
-
-	# 	}
-
-	# 	if (!$process.HasExited) {
-	# 		$process | Stop-Process -Force
-	# 	}
-	# }
-}
-
 function StopWSL {
 	Write-Host "$tab" "Stopping " -NoNewline
 	Write-Host "WSL" -ForegroundColor Cyan
@@ -165,17 +192,4 @@ function killCommon {
 	killMany "DriverBooster"
 }
 
-Write-Host
-Write-Header
-killCommon
-if ($reason -eq "gaming") {
-	killMany "code", "node", "adb", "studio64", "cmd", "pwsh", "slack"
-	StopWSL
-} elseif ($reason -eq "dev") {
-	killMany "Blitz*", "Medal*", "Overwolf*"
-}  elseif ($reason -eq "cleanup") {
-	killLeftover
-	StopWSL
-}
-Write-Host
-WriteResourcesCleared $global:TOTAL_CLEARED_CPU $global:TOTAL_CLEARED_RAM "" " total"
+MemFreeMain

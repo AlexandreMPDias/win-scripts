@@ -1,8 +1,7 @@
-const { log } = require('./log')
+const { log } = require('./log');
 const { chalk, getArgs, configPaths } = require('../../helpers');
-const { getResolvedPath } = require("./get-resolved-key-path");
+const { getResolvedPath } = require('./get-resolved-key-path');
 const getAliasedPath = require('./get-aliased-path');
-
 
 function parseInputAlias(aliasWithPath) {
 	const [key, ...rest] = aliasWithPath.split(/\\|\//);
@@ -12,21 +11,20 @@ function parseInputAlias(aliasWithPath) {
 function main() {
 	const paths = configPaths.get();
 
-	const aliasWithPath = getArgs(__dirname).join("/");
+	const aliasWithPath = getArgs(__dirname).join('/');
 
 	const { key, rest } = parseInputAlias(aliasWithPath);
 
 	const resolvedKeyPath = getResolvedPath(paths, key);
 
-	log.info({ resolvedKeyPath })
+	log.info({ resolvedKeyPath });
 
 	const aliasedPath = getAliasedPath(paths, `${resolvedKeyPath}/${rest}`);
 
 	log.info(`Going to [ ${aliasedPath} ]`);
-	process.stdout.write(aliasedPath)
+	process.stdout.write(aliasedPath);
 }
 
-// main();
 try {
 	main();
 } catch (err) {

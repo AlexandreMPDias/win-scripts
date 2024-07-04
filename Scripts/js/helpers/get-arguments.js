@@ -35,19 +35,51 @@ class ArgLister {
 	}
 }
 
+function toDefaultAlias(flag) {
+	if (flag.startsWith('-')) return flag.replace(/^-(-.).+/, '$1');
+	return flag[0];
+}
+
 function getArgs(dirname) {
 	const argLister = new ArgLister(dirname);
 	return argLister.getArgs();
 }
 
+function getFlagKeys(argv) {
+	const flags = argv.filter(arg => arg.startsWith('--') || arg.startsWith('-'));
+	const withoutHiphen = flags.map(f => f.replace(/^--?/, ''));
+	return new Set(withoutHiphen);
+}
+
+const argsHaveFlag = (argv, flagName, flagAlias = '') => {
+	const alias = flagAlias ?? toDefaultAlias(flagName);
+	const flagKeys = getFlagKeys(argv);
+	if (flagKeys.has(flagName)) return true;
+	if (alias !== null && flagKeys.has(alias)) return true;
+	return false;
+};
+
 module.exports = {
 	getArgs,
-	argsHaveAnyFlag: (args, ...flags) => {
-		flags = flags.map(String);
-		const allflags = new Set([
-			...flags.map(f => `--${f}`),
-			...flags.map(f => `-${f.charAt(0)}`),
-		]);
-		return args.some(arg => allflags.has(arg));
+	getFlagKeys,
+	/** @type {(args: any[], ...flags: string[]) => boolean} */
+	argsHaveAnyFlag: (argv, ...flags) => {
+		const argvFlags = getFlagKeys(argv);
+		return flags.some(flag => argvFlags.has(flag));
+	},
+	/** @type {(args: any[], ...flags: Array<string | {key: string, alias: string}>) => boolean} */
+	loadBooleanFlags: (argv, flags) => {
+		const output = {};
+		const flagKeys = getFlagKeys(argv);
+		flags.forEach(flag => {
+			const flagConfig = typeof flag === 'string' ? { key: flag, alias: null } : flag;
+			const { key, alias } = flagConfig;
+			if (flagKeys.has(key)) {
+				output[key] = true;
+			} else if (alias !== null && flagKeys.has(alias)) {
+				output[key] = true;
+			}
+		});
+		return output;
 	},
 };

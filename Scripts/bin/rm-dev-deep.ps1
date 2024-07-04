@@ -31,4 +31,5 @@ RmDeepCleanUp node_modules $force
 RmDeepCleanUp .jest $true
 RmDeepCleanUp .next $true
 RmDeepCleanUp __pycache__ $true
+RmDeepCleanUp .venv $true
 

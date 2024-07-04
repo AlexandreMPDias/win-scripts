@@ -1,7 +1,6 @@
 $utilitiesPath = Join-Path -Path $PSScriptRoot -ChildPath "../powershell-utils"
+Import-Module (Join-Path -Path $utilitiesPath -ChildPath "paint.psm1")
 Write-Debug "Loading DropdownMenu"
-# . Join-Path -Path $utilitiesPath -ChildPath "dropdown-menu.ps1"
-
 Import-Module (Join-Path -Path $utilitiesPath -ChildPath "dropdown-menu.psm1")
 
 # $bad = "Item1","Item2"

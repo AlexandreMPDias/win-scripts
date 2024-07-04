@@ -1,1 +1,1 @@
-& (Join-Path $PSScriptRoot "../inner_bin/use_aliased_path") code $args
+& (Join-Path $PSScriptRoot "../inner_bin/use_aliased_path") "kode" code $args

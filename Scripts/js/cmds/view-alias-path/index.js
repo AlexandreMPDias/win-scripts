@@ -1,9 +1,20 @@
-const { chalk, configPaths, polyfills, ascii } = require('../../helpers');
+const { chalk, configPaths, polyfills, ascii, loadBooleanFlags } = require('../../helpers');
 polyfills.load('stringCut');
 
+const FLAG_CONFIG = [
+	{ key: 'full-path', alias: 'f' },
+	{ key: 'help', alias: 'h' },
+];
+
+const config = loadBooleanFlags(process.argv, FLAG_CONFIG);
+let usingTextEllipsis = false;
+
 const parsePath = (path, maxPathSize) => {
+	if (config['full-path']) return path;
 	const pathSize = ascii.stripASCIIStyle(path).length;
 	if (pathSize < maxPathSize) return path;
+
+	usingTextEllipsis = true;
 
 	const max = Math.floor((maxPathSize - 2) / 2);
 	const head = path.head(max);
@@ -23,7 +34,24 @@ const writePath = (key, path, maxKeySize, maxRowSize) => {
 	return `${pKey}: ${indent}${pPath}`;
 };
 
+function showHelp() {
+	const colF = chalk.red;
+	const colD = chalk.yellow;
+	console.log(`Usage: [script-name] --list [${colF('options')}]`);
+	console.log();
+	console.log(`Options:`);
+	console.log();
+	console.log(`  ${colF('--help')}, ${colF('-h')}    ${colD('Show this help message')}`);
+	console.log(
+		`  ${colF('--full-path')}, ${colF('-f')}    ${colD('Show the full path of the alias')}`
+	);
+	console.log();
+}
+
 function main() {
+	if (config.help) {
+		return showHelp();
+	}
 	console.log();
 
 	const categories = configPaths.getGroupedByCategories();
@@ -44,6 +72,16 @@ function main() {
 		});
 		console.log();
 	});
+
+	if (usingTextEllipsis) {
+		console.log(
+			chalk.yellow(
+				`Add ${chalk.red('--full-path')} or ${chalk.red(
+					'-f'
+				)} to see the full path of the alias`
+			)
+		);
+	}
 }
 
 try {
