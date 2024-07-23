@@ -12,8 +12,9 @@ $env:ALIAS_TERMINAL_WIDTH = $pswindows.BufferSize.Width
 function ScriptMain {
     if(!$nextArgs[0]) {
         $Host.UI.WriteErrorLine("[error]: Missing alias key")
+        $Host.UI.WriteErrorLine("Run '$script_name --help' for more information.")
     } else {
-        if($command -eq "help" -or $command -eq "h") {
+        if($command -eq "help" -or $command -eq "h" -or (HasNamedFlag "help")) {
             Show-Help
             return
         }
