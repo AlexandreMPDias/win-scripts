@@ -6,7 +6,7 @@ if (!$scriptName) {
 }
 elseif (Test-Path -Path (Join-Path $PSScriptRoot "../js/cmds/$scriptName/index.js") -PathType Leaf) {
 	$script = Resolve-Path -Path (Join-Path $PSScriptRoot "../js/cmds/$scriptName/index.js");
-	$Node = Resolve-Path -Path "C:/Dev/nvm/v15.14.0/node.exe"
+	$Node = Resolve-Path -Path "C:/Users/Tijuk/AppData/Local/nvs/default/node.exe"
 	& $Node $script $params
 }
 else {
